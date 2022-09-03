@@ -17,22 +17,43 @@ import { AuthConfig } from '@ioc:Adonis/Addons/Auth'
 |
 */
 const authConfig: AuthConfig = {
-  guard: 'basic',
+  guard: 'api',
   guards: {
     /*
     |--------------------------------------------------------------------------
-    | Basic Auth Guard
+    | OAT Guard
     |--------------------------------------------------------------------------
     |
-    | Uses Basic auth to authenticate an HTTP request. There is no concept of
-    | "login" and "logout" with basic auth. You just authenticate the requests
-    | using a middleware and browser will prompt the user to enter their login
-    | details
+    | OAT (Opaque access tokens) guard uses database backed tokens to authenticate
+    | HTTP request. This guard DOES NOT rely on sessions or cookies and uses
+    | Authorization header value for authentication.
+    |
+    | Use this guard to authenticate mobile apps or web clients that cannot rely
+    | on cookies/sessions.
     |
     */
-    basic: {
-      driver: 'basic',
-      realm: 'Login',
+    api: {
+      driver: 'oat',
+
+      /*
+      |--------------------------------------------------------------------------
+      | Tokens provider
+      |--------------------------------------------------------------------------
+      |
+      | Uses SQL database for managing tokens. Use the "database" driver, when
+      | tokens are the secondary mode of authentication.
+      | For example: The Github personal tokens
+      |
+      | The foreignKey column is used to make the relationship between the user
+      | and the token. You are free to use any column name here.
+      |
+      */
+      tokenProvider: {
+        type: 'api',
+        driver: 'database',
+        table: 'api_tokens',
+        foreignKey: 'user_id',
+      },
 
       provider: {
         /*
@@ -66,7 +87,7 @@ const authConfig: AuthConfig = {
         | of the mentioned columns to find their user record.
         |
         */
-        uids: ['username', 'email'],
+        uids: ['email'],
 
         /*
         |--------------------------------------------------------------------------

@@ -20,13 +20,6 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async () => {
-  return { hello: 'world' }
-})
-
-Route.post("/api/v1/register", "AuthController.register")
-Route.post("/api/v1/login", "AuthController.login")
-
-Route.group(() => {
-  Route.resource("posts", "Posts")
-}).middleware('auth')
+Route.get('/', () => 'API Warehouse');
+Route.post("/register", "AuthController.register")
+Route.post("/login", "AuthController.login")
